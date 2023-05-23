@@ -15,6 +15,8 @@ import (
 type Configuration struct {
 	// gpt apikey
 	ApiKey string `json:"api_key"`
+	// 配置访问chatgpt代理服务器
+	ProxyServer string `json:"proxy_server"`
 	// 自动通过好友
 	AutoPass bool `json:"auto_pass"`
 	// 会话超时时间
@@ -65,6 +67,7 @@ func LoadConfig() *Configuration {
 		}
 		// 有环境变量使用环境变量
 		ApiKey := os.Getenv("APIKEY")
+		ProxyServer := os.Getenv("ProxyServer")
 		AutoPass := os.Getenv("AUTO_PASS")
 		SessionTimeout := os.Getenv("SESSION_TIMEOUT")
 		Model := os.Getenv("MODEL")
@@ -74,6 +77,9 @@ func LoadConfig() *Configuration {
 		SessionClearToken := os.Getenv("SESSION_CLEAR_TOKEN")
 		if ApiKey != "" {
 			config.ApiKey = ApiKey
+		}
+		if ProxyServer != "" {
+			config.ProxyServer = ProxyServer
 		}
 		if AutoPass == "true" {
 			config.AutoPass = true

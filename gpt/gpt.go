@@ -48,10 +48,10 @@ type ChatGPTRequestBody struct {
 }
 
 // Completions gtp文本模型回复
-//curl https://api.openai.com/v1/completions
-//-H "Content-Type: application/json"
-//-H "Authorization: Bearer your chatGPT key"
-//-d '{"model": "text-davinci-003", "prompt": "give me good song", "temperature": 0, "max_tokens": 7}'
+// curl https://api.openai.com/v1/completions
+// -H "Content-Type: application/json"
+// -H "Authorization: Bearer your chatGPT key"
+// -d '{"model": "text-davinci-003", "prompt": "give me good song", "temperature": 0, "max_tokens": 7}'
 func Completions(msg string) (string, error) {
 	var gptResponseBody *ChatGPTResponseBody
 	var resErr error
@@ -99,8 +99,13 @@ func httpRequestCompletions(msg string, runtimes int) (*ChatGPTResponseBody, err
 	}
 
 	log.Printf("gpt request(%d) json: %s\n", runtimes, string(requestData))
-
-	req, err := http.NewRequest(http.MethodPost, "https://api.openai.com/v1/completions", bytes.NewBuffer(requestData))
+	proxyServer := cfg.ProxyServer
+	log.Printf("proxyServer is %s\n", proxyServer)
+	gptUrl := "https://api.openai.com/v1/completions"
+	if proxyServer != "" {
+		gptUrl = proxyServer + "/v1/completions"
+	}
+	req, err := http.NewRequest(http.MethodPost, gptUrl, bytes.NewBuffer(requestData))
 	if err != nil {
 		return nil, fmt.Errorf("http.NewRequest error: %v", err)
 	}
